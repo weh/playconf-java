@@ -34,4 +34,10 @@ public class Proposal extends Model{
     @Valid
     @OneToOne(cascade = CascadeType.ALL)
     public Speaker speaker;
+
+    private static Finder<Long,Proposal> find = new Finder<Long, Proposal>(Long.class, Proposal.class);
+
+    public static Proposal findKeynote() {
+        return find.where().eq("type", SessionType.Keynote).findUnique();
+    }
 }

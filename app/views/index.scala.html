@@ -1,4 +1,4 @@
-@(message: String)
+@(keynote: Proposal)
 
 @import helper._
 
@@ -19,11 +19,11 @@
         <article>
             <ul>
                 <li>
-                    <img id="speakerImage" src="assets/images/fake-speaker.png">
-                    <h2 id="speakerName">John Doe</h2>
-                    <a id="twitterId" href="#" class="twitter">twitter id</a>
-                    <h3 id="title">Keynote - keynote title</h3>
-                    <p id="proposal">keynote proposal goes in here</p>
+                    <img id="speakerImage" src="@keynote.speaker.pictureUrl">
+                    <h2 id="speakerName">@keynote.speaker.name</h2>
+                    <a id="twitterId" href="http://twitter.com/@keynote.speaker.twitterId" class="twitter">@keynote.speaker.twitterId</a>
+                    <h3 id="title">Keynote - @keynote.title</h3>
+                    <p id="proposal">@keynote.proposal</p>
                 </li>
             </ul>
         </article>
