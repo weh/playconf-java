@@ -13,16 +13,12 @@ public class Application extends Controller {
     public static Result index() {
         return ok(views.html.index.render("Hello Play Framework"));
     }
-    
-    public static Result welcome(String name) {
-        return ok("<h1>Welcome "+ name + "</h1>").as("text/html");
-    }
 
     public static Result newProposal() {
         return ok(views.html.newProposal.render(proposalForm));
     }
 
-    public static Result submitProposal() {
+    public static Result submit() {
         Form<Proposal> submittedForm = proposalForm.bindFromRequest();
         if (submittedForm.hasErrors()) {
             return ok(views.html.newProposal.render(submittedForm));
