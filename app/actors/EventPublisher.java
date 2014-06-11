@@ -2,6 +2,7 @@ package actors;
 
 import actors.messages.CloseConnectionEvent;
 import actors.messages.NewConnectionEvent;
+import actors.messages.UserEvent;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
@@ -31,9 +32,17 @@ public class EventPublisher extends UntypedActor {
             final CloseConnectionEvent cce = (CloseConnectionEvent) message;
             final String uuid = cce.uuid();
             connections.remove(uuid);
-            Logger.info("Browser "+ uuid + " is disconnected");
+            Logger.info("Browser " + uuid + " is disconnected");
+        } else if (message instanceof UserEvent) {
+            broadcastEvent((UserEvent)message);
         } else {
             unhandled(message);
+        }
+    }
+
+    private void broadcastEvent(UserEvent message) {
+        for(Out<JsonNode> out: connections.values()) {
+            out.write(message.json());
         }
     }
 }

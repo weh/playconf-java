@@ -3,6 +3,7 @@ package controllers;
 import actors.EventPublisher;
 import actors.messages.CloseConnectionEvent;
 import actors.messages.NewConnectionEvent;
+import actors.messages.NewProposalEvent;
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.routes;
@@ -55,11 +56,12 @@ public class Application extends Controller {
         if (submittedForm.hasErrors()) {
             return Promise.<Result>pure(ok(views.html.newProposal.render(submittedForm)));
         } else {
-            Proposal proposal = submittedForm.get();
+            final Proposal proposal = submittedForm.get();
             Promise<Result> result = proposal.asyncSave().map(new Function<Void, Result>() {
                 @Override
                 public Result apply(Void aVoid) throws Throwable {
                     flash("message", "Thanks for submitting a proposal");
+                    EventPublisher.ref.tell(new NewProposalEvent(proposal), ActorRef.noSender());
                     return redirect(routes.Application.index());
                 }
             });
