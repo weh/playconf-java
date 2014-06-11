@@ -1,6 +1,9 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
+
+GET     /buzz                       controllers.Application.buzz()
+
 GET     /new                        controllers.Application.newProposal()
 POST    /submit                     controllers.Application.submit()
 GET     /                           controllers.Application.index()
