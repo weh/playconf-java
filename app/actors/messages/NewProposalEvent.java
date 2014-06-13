@@ -19,7 +19,7 @@ public class NewProposalEvent implements UserEvent {
     @Override
     public JsonNode json() {
         ObjectNode result = Json.newObject();
-        result.put("messageType", "newProposal");
+        result.put(MSG_TYPE, "newProposal");
 
         result.put("speakerName", proposal.speaker.name);
         result.put("twitterId", proposal.speaker.twitterId);
