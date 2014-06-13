@@ -79,4 +79,15 @@ public class Proposal extends Model{
             }
         }, ctx);
     }
+
+    public static Promise<Proposal> selectRandomTalk() {
+        return Promise.promise(new Function0<Proposal>() {
+
+            @Override
+            public Proposal apply() throws Throwable {
+                Long randomId = (long) (1 + Math.random() * (5 - 1));
+                return Proposal.find.byId(randomId);
+            }
+        });
+    }
 }
