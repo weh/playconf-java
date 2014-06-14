@@ -4,19 +4,29 @@ import actors.EventPublisher;
 import actors.messages.CloseConnectionEvent;
 import actors.messages.NewConnectionEvent;
 import actors.messages.NewProposalEvent;
+import actors.messages.UserRegistrationEvent;
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.routes;
+import external.services.OAuthService;
+import external.services.TwitterOAuthService;
 import models.*;
+import play.Play;
 import play.data.Form;
 import play.libs.F.*;
+import play.libs.OAuth;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Results;
 import play.mvc.WebSocket;
 
 public class Application extends Controller {
 
     private static final Form<Proposal> proposalForm = Form.form(Proposal.class);
+
+    private static final OAuthService service = new TwitterOAuthService(
+            Play.application().configuration().getString("twitter.consumer.key"),
+            Play.application().configuration().getString("twitter.consumer.secret"));
 
     public static WebSocket<JsonNode> buzz() {
         return new WebSocket<JsonNode>() {
@@ -69,4 +79,27 @@ public class Application extends Controller {
         }
     }
 
+    public static Result register() {
+        String callbackUrl = routes.Application.registerCallback().absoluteURL(request());
+        Tuple<String, OAuth.RequestToken> t = service.retrieveRequestToken(callbackUrl);
+        flash("request_token", t._2.token);
+        flash("request_secret", t._2.secret);
+        return redirect(t._1);
+    }
+
+    public static Result registerCallback() {
+        OAuth.RequestToken token = new OAuth.RequestToken(flash("request_token"), flash("request_secret"));
+
+        String authVerifier = request().getQueryString("oauth_verifier");
+        Promise<JsonNode> userProfile = service.registeredUserProfile(token, authVerifier);
+        userProfile.onRedeem(new Callback<JsonNode>() {
+            @Override
+            public void invoke(JsonNode jsonNode) throws Throwable {
+                RegisteredUser user = RegisteredUser.fromJson(jsonNode);
+                user.save();
+                EventPublisher.ref.tell(new UserRegistrationEvent(user), ActorRef.noSender());
+            }
+        });
+        return redirect(routes.Application.index());
+    }
 }
