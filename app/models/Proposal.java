@@ -2,6 +2,7 @@ package models;
 
 import javax.validation.*;
 
+import common.DBExecutionContext;
 import play.Logger;
 import play.data.validation.Constraints.*;
 import play.db.ebean.Model;
@@ -43,15 +44,13 @@ public class Proposal extends Model{
 
     private static Finder<Long,Proposal> find = new Finder<Long, Proposal>(Long.class, Proposal.class);
 
-    private static ExecutionContext ctx = Akka.system().dispatchers().lookup("akka.db-dispatcher");
-
     public static Promise<Proposal> findKeynote() {
         return Promise.promise(new Function0<Proposal>() {
             @Override
             public Proposal apply() throws Throwable {
                 return find.where().eq("type", SessionType.Keynote).findUnique();
             }
-        }, ctx).recover(new Function<Throwable, Proposal>() {
+        }, DBExecutionContext.ctx).recover(new Function<Throwable, Proposal>() {
 
             @Override
             public Proposal apply(Throwable t) throws Throwable {
@@ -66,7 +65,7 @@ public class Proposal extends Model{
                 p.speaker = speaker;
                 return p;
             }
-        }, ctx);
+        }, DBExecutionContext.ctx);
     }
 
 
@@ -77,7 +76,7 @@ public class Proposal extends Model{
                 save();
                 return null;
             }
-        }, ctx);
+        }, DBExecutionContext.ctx);
     }
 
     public static Promise<Proposal> selectRandomTalk() {
