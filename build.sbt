@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   "javax.inject" % "javax.inject" % "1",
   "org.mockito" % "mockito-core" % "1.9.5" % "test",
   "org.jsoup" % "jsoup" % "1.7.2" % "test",
-  "org.webjars" % "bootstrap" % "2.3.1")
+  "org.webjars" % "bootstrap" % "2.3.1",
+  "com.typesafe.slick" %% "slick" % "1.0.0")
 
 playJavaSettings ++ SassPlugin.sassSettings
