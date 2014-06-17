@@ -1,8 +1,12 @@
 playconf-java
 =============
 
-my version of the Typesafe free online training example
+**Original Project** https://github.com/typesafehub/playconf<br/>
+**Tutorial** https://typesafe.com/how/online-training/play-java
 
-Original Project https://github.com/typesafehub/playconf
-Tutorial https://typesafe.com/how/online-training/play-java
+This is my version of the free online training example.
+
+
+
+
 
